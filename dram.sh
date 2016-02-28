@@ -45,6 +45,7 @@ function dram_create_macports () {
     echo "Setting up activate script..."
     cat > $dram_path/bin/activate <<EOF
 PATH=$dram_path/bin:$dram_path/sbin:\$PATH
+MANPATH=$dram_path/share/man:\$MANPATH
 #DYLD_LIBRARY_PATH=$dram_path/lib
 EOF
 
