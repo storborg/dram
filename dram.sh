@@ -14,7 +14,7 @@ function dram_list () {
 }
 
 function dram_create_plain () {
-    dram_path=$1
+    local dram_path=$1
     echo "Creating plain dram in '$dram_path'."
     mkdir $dram_path/bin
     cat > $dram_path/bin/activate <<EOF
@@ -24,7 +24,7 @@ EOF
 }
 
 function dram_create_macports () {
-    dram_path=$1
+    local dram_path=$1
     echo "Creating MacPorts dram in '$dram_path'."
 
     pushd /tmp
@@ -54,7 +54,7 @@ EOF
 }
 
 function dram_create_homebrew () {
-    dram_path=$1
+    local dram_path=$1
     echo "Creating Homebrew dram in '$dram_path'."
 
     echo "Downloading and extracting..."
@@ -72,14 +72,14 @@ EOF
 
 function dram_create () {
     # Defaults
-    new_dram_type=plain
+    local new_dram_type=plain
     # Parse args
     while [[ $# > 1 ]]
     do
-        key="$1"
+        local key="$1"
         case $key in
             -t|--type)
-                new_dram_type="$2"
+                local new_dram_type="$2"
                 shift
                 ;;
             *)
@@ -95,10 +95,10 @@ function dram_create () {
         echo "Usage: dram create [-t type] <name>"
         return
     fi
-    new_dram_name="$1"
+    local new_dram_name="$1"
 
     echo "Creating new dram '$new_dram_name' of type '$new_dram_type'."
-    new_dram_path=$DRAM_PREFIX/$new_dram_name
+    local new_dram_path=$DRAM_PREFIX/$new_dram_name
     mkdir -p $new_dram_path
 
     case $new_dram_type in
@@ -124,8 +124,8 @@ function dram_use () {
         return
     fi
 
-    new_dram=$1
-    activate_path=$DRAM_PREFIX/$new_dram/bin/activate
+    local new_dram=$1
+    local activate_path=$DRAM_PREFIX/$new_dram/bin/activate
 
     if [ ! -e "$activate_path" ]
     then
@@ -153,8 +153,8 @@ function dram_destroy () {
         return
     fi
 
-    destroy_dram=$1
-    destroy_path=$DRAM_PREFIX/$destroy_dram
+    local destroy_dram=$1
+    local destroy_path=$DRAM_PREFIX/$destroy_dram
 
     if [ ! -e "$destroy_path" ]
     then
@@ -188,7 +188,7 @@ function dram_help () {
 
 
 function dram () {
-    subcommand=$1
+    local subcommand=$1
     shift
 
     case $subcommand in
