@@ -90,7 +90,7 @@ function dram_create () {
         shift
     done
 
-    if [ $# -ne 1 ]
+    if [[ $# -ne 1 ]]
     then
         echo "Usage: dram create [-t type] <name>"
         return
@@ -118,7 +118,7 @@ function dram_create () {
 }
 
 function dram_use () {
-    if [ $# -ne 1 ]
+    if [[ $# -ne 1 ]]
     then
         echo "Usage: dram use <name>"
         return
@@ -127,13 +127,13 @@ function dram_use () {
     local new_dram=$1
     local activate_path=$DRAM_PREFIX/$new_dram/bin/activate
 
-    if [ ! -e "$activate_path" ]
+    if [[ ! -e "$activate_path" ]]
     then
         echo "A dram named '$new_dram' does not exist."
         return
     fi
 
-    if [ -n "$DRAM" ]
+    if [[ -n "$DRAM" ]]
     then
         echo "Could not activate dram '$new_dram', alternate dram '$DRAM' is already active."
         return
@@ -147,7 +147,7 @@ function dram_use () {
 }
 
 function dram_destroy () {
-    if [ $# -ne 1 ]
+    if [[ $# -ne 1 ]]
     then
         echo "Usage: dram destroy <name>"
         return
@@ -164,7 +164,7 @@ function dram_destroy () {
 
     echo "About to destory the dram '$destroy_dram' and wipe out '$destroy_path'."
     read -p "Are you sure? [y/N] " confirm
-    if [ "$confirm" == "y" ]
+    if [[ "$confirm" == "y" ]]
     then
         rm -rf $destroy_path
         echo "Destroyed."
