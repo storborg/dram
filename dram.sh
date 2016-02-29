@@ -20,6 +20,8 @@ function dram_create_plain () {
     cat > $dram_path/bin/activate <<EOF
 PATH=$dram_path/bin:$dram_path/sbin:\$PATH
 DYLD_LIBRARY_PATH=$dram_path/lib
+DRAM_CMAKE_FLAGS="-DCMAKE_INSTALL_PREFIX=$dram_path -DCMAKE_PREFIX_PATH=$dram_path"
+DRAM_CONFIGURE_FLAGS="--prefix=$dram_path"
 EOF
 }
 
@@ -126,7 +128,8 @@ function dram_use () {
     fi
 
     local new_dram=$1
-    local activate_path=$DRAM_ROOT/$new_dram/bin/activate
+    local new_dram_prefix=$DRAM_ROOT/$new_dram
+    local activate_path=$new_dram_prefix/bin/activate
 
     if [[ ! -e "$activate_path" ]]
     then
@@ -143,6 +146,7 @@ function dram_use () {
     echo "Activating dram '$new_dram'."
     source $activate_path
     DRAM=$new_dram
+    DRAM_PREFIX=$new_dram_prefix
 
     # FIXME manipulate prompt to add dram name
 }
