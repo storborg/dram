@@ -27,7 +27,7 @@ Dram Types
 
 * **Macports** drams populate an instance of `MacPorts <https://www.macports.org/>`_.
 
-Comamnd-Line Usage
+Command-Line Usage
 ------------------
 
 Dram includes a command-line utility which is the expected entry point for most
