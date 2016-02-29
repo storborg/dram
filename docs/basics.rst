@@ -43,6 +43,10 @@ This will create a new dram you can then install stuff into.::
 
     $ dram create example
 
+To create a dram of a particular type::
+
+    $ dram create -t macports example
+
 Using The Dram
 --------------
 

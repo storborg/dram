@@ -24,6 +24,7 @@ Contents
     :maxdepth: 2
 
     basics
+    hooks
     contributing
 
 Indices and Tables
