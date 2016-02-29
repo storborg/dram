@@ -6,7 +6,7 @@ Concepts
 
 Each new sandboxed environment is referred to as a *dram*.
 
-The environment variable ``DRAM_PREFIX`` is the root directory where all drams
+The environment variable ``DRAM_ROOT`` is the root directory where all drams
 are kept. Each dram is a subdirectory.
 
 .. warning::

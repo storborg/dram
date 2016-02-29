@@ -1,8 +1,8 @@
 dram_version=0.0.1.dev
 
-if [ "$DRAM_PREFIX" = "" ]
+if [ "$DRAM_ROOT" = "" ]
 then
-    DRAM_PREFIX="/dram"
+    DRAM_ROOT="/dram"
 fi
 
 function dram_version () {
@@ -10,7 +10,7 @@ function dram_version () {
 }
 
 function dram_list () {
-    ls $DRAM_PREFIX
+    ls $DRAM_ROOT
 }
 
 function dram_create_plain () {
@@ -99,7 +99,7 @@ function dram_create () {
     local new_dram_name="$1"
 
     echo "Creating new dram '$new_dram_name' of type '$new_dram_type'."
-    local new_dram_path=$DRAM_PREFIX/$new_dram_name
+    local new_dram_path=$DRAM_ROOT/$new_dram_name
     mkdir -p $new_dram_path
 
     case $new_dram_type in
@@ -126,7 +126,7 @@ function dram_use () {
     fi
 
     local new_dram=$1
-    local activate_path=$DRAM_PREFIX/$new_dram/bin/activate
+    local activate_path=$DRAM_ROOT/$new_dram/bin/activate
 
     if [[ ! -e "$activate_path" ]]
     then
@@ -155,7 +155,7 @@ function dram_destroy () {
     fi
 
     local destroy_dram=$1
-    local destroy_path=$DRAM_PREFIX/$destroy_dram
+    local destroy_path=$DRAM_ROOT/$destroy_dram
 
     if [ ! -e "$destroy_path" ]
     then
