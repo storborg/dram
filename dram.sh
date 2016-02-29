@@ -163,7 +163,7 @@ function dram_destroy () {
 
     if [ ! -e "$destroy_path" ]
     then
-        echo "A dram named '$new_dram' does not exist."
+        echo "A dram named '$destroy_dram' does not exist."
         return
     fi
 
