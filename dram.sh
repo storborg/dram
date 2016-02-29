@@ -139,8 +139,19 @@ function dram_use () {
 
     if [[ -n "$DRAM" ]]
     then
-        echo "Could not activate dram '$new_dram', alternate dram '$DRAM' is already active."
+        if [["$DRAM" == "$new_dram" ]]
+        then
+            echo "Dram '$DRAM' is already active."
+        else
+            echo "Could not activate dram '$new_dram', alternate dram '$DRAM' is already active."
+        fi
         return
+    fi
+
+    type dram_hook_preactivate >/dev/null 2>&1
+    if [ $? -eq 0 ]
+    then
+        dram_hook_preactivate $new_dram $new_dram_prefix
     fi
 
     echo "Activating dram '$new_dram'."
@@ -148,7 +159,11 @@ function dram_use () {
     DRAM=$new_dram
     DRAM_PREFIX=$new_dram_prefix
 
-    # FIXME manipulate prompt to add dram name
+    type dram_hook_postactivate >/dev/null 2>&1
+    if [ $? -eq 0 ]
+    then
+        dram_hook_postactivate $new_dram $new_dram_prefix
+    fi
 }
 
 function dram_destroy () {
