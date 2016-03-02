@@ -18,10 +18,11 @@ function dram_create_plain () {
     echo "Creating plain dram in '$dram_path'."
     mkdir $dram_path/bin
     cat > $dram_path/bin/activate <<EOF
-PATH=$dram_path/bin:$dram_path/sbin:\$PATH
-DYLD_LIBRARY_PATH=$dram_path/lib
-DRAM_CMAKE_FLAGS="-DCMAKE_INSTALL_PREFIX=$dram_path -DCMAKE_PREFIX_PATH=$dram_path"
-DRAM_CONFIGURE_FLAGS="--prefix=$dram_path"
+export PATH=$dram_path/bin:$dram_path/sbin:\$PATH
+export DYLD_LIBRARY_PATH=$dram_path/lib
+export LD_LIBRARY_PATH=$dram_path/lib
+export DRAM_CMAKE_FLAGS="-DCMAKE_INSTALL_PREFIX=$dram_path -DCMAKE_PREFIX_PATH=$dram_path"
+export DRAM_CONFIGURE_FLAGS="--prefix=$dram_path"
 EOF
 }
 
@@ -46,9 +47,9 @@ function dram_create_macports () {
 
     echo "Setting up activate script..."
     cat > $dram_path/bin/activate <<EOF
-PATH=$dram_path/bin:$dram_path/sbin:\$PATH
-MANPATH=$dram_path/share/man:\$MANPATH
-#DYLD_LIBRARY_PATH=$dram_path/lib
+export PATH=$dram_path/bin:$dram_path/sbin:\$PATH
+export MANPATH=$dram_path/share/man:\$MANPATH
+#export DYLD_LIBRARY_PATH=$dram_path/lib
 EOF
 
     # FIXME may want to add 'startupitem_install no' to macports.conf
@@ -65,8 +66,8 @@ function dram_create_homebrew () {
 
     echo "Setting up activate script..."
     cat > $dram_path/bin/activate <<EOF
-PATH=$dram_path/bin:$dram_path/sbin:\$PATH
-#DYLD_LIBRARY_PATH=$dram_path/lib
+export PATH=$dram_path/bin:$dram_path/sbin:\$PATH
+#export DYLD_LIBRARY_PATH=$dram_path/lib
 EOF
 
 
