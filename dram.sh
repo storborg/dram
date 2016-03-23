@@ -192,6 +192,80 @@ function dram_destroy () {
     fi
 }
 
+function dram_promote () {
+    if [[ $# -ne 1 ]]
+    then
+        echo "Usage: dram promote <name>"
+        return
+    fi
+
+    if [[ -z "$DRAM" ]]
+    then
+        echo "No dram activated."
+        return
+    fi
+
+    local promote_executable=$1
+    local promote_path=`which $1`
+    local dram_prefix="$DRAM_ROOT/$DRAM"
+    local symlink_path="/usr/local/bin/$promote_executable"
+
+    if [[ -e "$symlink_path" ]]
+    then
+        echo "Something already exists at $symlink_path, refusing to promote."
+        return
+    fi
+
+    if [[ -z "$promote_path" ]]
+    then
+        echo "No executable found for $promote_executable."
+        return
+    fi
+
+    if [[ $promote_path != $dram_prefix* ]]
+    then
+        echo "Resolved path for $promote_executable is not inside the current dram, refusing to promote."
+        return
+    fi
+
+    echo "Symlinking $promote_path to $symlink_path."
+    sudo ln -s $promote_path $symlink_path
+}
+
+function dram_demote () {
+    if [[ $# -ne 1 ]]
+    then
+        echo "Usage: dram demote <name>"
+        return
+    fi
+
+    if [[ -z "$DRAM" ]]
+    then
+        echo "No dram activated."
+        return
+    fi
+
+    local demote_executable=$1
+    local demote_path="/usr/local/bin/$demote_executable"
+    local dram_prefix="$DRAM_ROOT/$DRAM"
+    local target_path="$(readlink $demote_path)"
+
+    if [[ ! -h "$demote_path" ]]
+    then
+        echo "$demote_path is not a symlink, refusing to demote."
+        return
+    fi
+
+    if [[ $target_path != $dram_prefix* ]]
+    then
+        echo "$demote_path points to $target_path, which is not inside this dram. Refusing to demote."
+        return
+    fi
+
+    echo "Removing symlink at $demote_path."
+    sudo rm $demote_path
+}
+
 function dram_usage () {
     echo "Available subcommands:"
     echo "  version"
@@ -199,6 +273,8 @@ function dram_usage () {
     echo "  create"
     echo "  use"
     echo "  destroy"
+    echo "  promote"
+    echo "  demote"
     echo "  help"
 }
 
@@ -227,6 +303,12 @@ function dram () {
             ;;
         destroy)
             dram_destroy $@
+            ;;
+        promote)
+            dram_promote $@
+            ;;
+        demote)
+            dram_demote $@
             ;;
         -h|--help|help)
             dram_help $@
