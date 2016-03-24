@@ -210,7 +210,7 @@ function dram_promote () {
     local dram_prefix="$DRAM_ROOT/$DRAM"
     local symlink_path="/usr/local/bin/$promote_executable"
 
-    if [[ -e "$symlink_path" ]]
+    if [[ -e "$symlink_path"  ]] || [[ -h "$symlink_path" ]]
     then
         echo "Something already exists at $symlink_path, refusing to promote."
         return
