@@ -17,6 +17,7 @@ function dram_create_plain () {
     local dram_path=$1
     echo "Creating plain dram in '$dram_path'."
     mkdir $dram_path/bin
+    mkdir $dram_path/source
     cat > $dram_path/bin/activate <<EOF
 export PATH=$dram_path/bin:$dram_path/sbin:\$PATH
 export DYLD_LIBRARY_PATH=$dram_path/lib
@@ -266,6 +267,16 @@ function dram_demote () {
     sudo rm $demote_path
 }
 
+function dram_cdsource () {
+    if [[ -z "$DRAM" ]]
+    then
+        echo "No dram activated."
+        return
+    fi
+
+    cd "$DRAM_ROOT/$DRAM/source"
+}
+
 function dram_usage () {
     echo "Available subcommands:"
     echo "  version"
@@ -309,6 +320,9 @@ function dram () {
             ;;
         demote)
             dram_demote $@
+            ;;
+        cdsource)
+            dram_cdsource $0
             ;;
         -h|--help|help)
             dram_help $@
