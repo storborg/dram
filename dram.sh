@@ -33,11 +33,11 @@ function dram_create_macports () {
 
     pushd /tmp
     echo "Downloading MacPorts..."
-    rm macports.tar.bz2
-    curl -o macports.tar.bz2 https://distfiles.macports.org/MacPorts/MacPorts-2.3.3.tar.bz2
+    rm -f macports-dram.tar.bz2
+    curl -o macports-dram.tar.bz2 https://distfiles.macports.org/MacPorts/MacPorts-2.3.4.tar.bz2
     echo "Extracting..."
-    tar xf macports.tar.bz2
-    cd MacPorts-2.3.3
+    tar xf macports-dram.tar.bz2
+    cd MacPorts-2.3.4
     echo "Configuring..."
     ./configure --prefix=$dram_path --with-applications-dir=$dram_path/Applications --enable-readline --with-install-user=$USER --with-install-group=nogroup
     echo "Compiling..."
