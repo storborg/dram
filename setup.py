@@ -15,6 +15,7 @@ setup(name='dram',
       url='https://github.com/storborg/dram',
       author='Scott Torborg',
       author_email='storborg@gmail.com',
+      install_requires=['six>=1.5.2'],
       license='MIT',
       packages=find_packages(),
       test_suite='nose.collector',
@@ -24,5 +25,4 @@ setup(name='dram',
       entry_points="""\
       [console_scripts]
       dram-install = dram:install
-      """,
-     )
+      """)

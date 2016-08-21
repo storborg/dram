@@ -3,7 +3,10 @@ from __future__ import print_function
 import sys
 import os
 import argparse
+import pkg_resources
 from datetime import datetime
+
+from six.moves import input
 
 
 __version__ = '0.0.1.dev'
@@ -11,18 +14,14 @@ __version__ = '0.0.1.dev'
 DEFAULT_ROOT = '/dram'
 
 
-if sys.version_info[0] > 2:
-    def input_compat(prompt):
-        return input(prompt)
-else:
-    def input_compat(prompt):
-        return raw_input(prompt)
-
-
 def yesno(prompt):
-    resp = input_compat(prompt + ' [Y/n] ')
-    resp = resp.strip().lower()
-    return resp in ('y', 'yes')
+    while True:
+        resp = input(prompt + ' [Y/n] ')
+        resp = resp.strip().lower()
+        if resp in ('y', 'yes', ''):
+            return True
+        elif resp in ('n', 'no'):
+            return False
 
 
 def check_for_existing():
@@ -54,25 +53,27 @@ def install(argv=sys.argv):
 
     opts = p.parse_args(argv[1:])
 
+    print("This script will add new lines to your bashrc to configure dram.")
+    print("")
+
     # check to see if dram is already installed by looking for DRAM environment
     # variables. prompt to proceed.
     existing = check_for_existing()
     if existing and not opts.noninteractive:
-        abort = yesno('Existing dram install detected.\nAbort?')
+        print("Existing dram install detected.")
+        abort = yesno('Abort?')
         if abort:
             return -1
 
-    # tell the user what this script will do
-    print("This script will add new lines to your bashrc to configure dram.")
-    print("")
-
     # get desired dram root path if not specified on command line
-    if not opts.root:
+    if opts.root:
+        root = opts.root
+    else:
         if opts.noninteractive:
             root = DEFAULT_ROOT
         else:
             print("What path would you like to use for the dram root?")
-            root = input_compat('[%s] ' % DEFAULT_ROOT)
+            root = input('[%s] ' % DEFAULT_ROOT)
             root = root.strip()
             if not root:
                 root = DEFAULT_ROOT
@@ -85,10 +86,14 @@ def install(argv=sys.argv):
             print("Warning: dram root already exists and is not writable!")
 
     # write the DRAM_ROOT var and source the script inside .bashrc
-    script_path = pkg_resouces.resource_filename('dram', 'dram.sh')
+    script_path = pkg_resources.resource_filename('dram', 'dram.sh')
     date = '%s UTC' % datetime.utcnow()
     bashrc_s = bashrc_templ % dict(date=date,
                                    root=root,
                                    script_path=script_path)
-    with open('bashrc_s', 'a') as f:
+    bashrc_path = os.path.join(os.path.expanduser('~'), '.bashrc')
+    with open(bashrc_path, 'a') as f:
         f.write(bashrc_s)
+
+    print("")
+    print("Installation completed. You should restart your shell now.")
