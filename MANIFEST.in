@@ -2,6 +2,7 @@ include README.rst
 include CHANGES
 include LICENSE
 recursive-include docs *
+recursive-include * *.sh
 
 prune docs/_build
 recursive-exclude * __pycache__

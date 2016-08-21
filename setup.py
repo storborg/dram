@@ -21,5 +21,8 @@ setup(name='dram',
       tests_require=['nose'],
       include_package_data=True,
       zip_safe=False,
-      scripts=['dram.sh'],
+      entry_points="""\
+      [console_scripts]
+      dram-install = dram:install
+      """,
      )
