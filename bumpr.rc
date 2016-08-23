@@ -7,8 +7,10 @@ clean =
     python setup.py clean
     rm -rf *egg-info build dist
 files =
+    setup.py
     README.rst
     dram/dram.sh
+    docs/conf.py
 
 [bump]
 unsuffix = true
