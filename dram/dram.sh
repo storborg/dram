@@ -1,4 +1,4 @@
-dram_version=0.0.3.dev
+dram_version=0.0.4
 
 if [ "$DRAM_ROOT" = "" ]
 then
