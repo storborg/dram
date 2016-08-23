@@ -8,7 +8,7 @@ clean =
     rm -rf *egg-info build dist
 files =
     README.rst
-    dram.sh
+    dram/dram.sh
 
 [bump]
 unsuffix = true
