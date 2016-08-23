@@ -15,15 +15,53 @@ function dram_list () {
 
 function dram_create_plain () {
     local dram_path=$1
+    local platform=$(uname)
     echo "Creating plain dram in '$dram_path'."
     mkdir $dram_path/bin
     mkdir $dram_path/source
+
+    if [ "$platform" == "Darwin" ]
+    then
+        LIB_PATH_VARNAME="DYLD_LIBRARY_PATH"
+    else
+        LIB_PATH_VARNAME="LD_LIBRARY_PATH"
+    fi
+
     cat > $dram_path/bin/activate <<EOF
 export PATH=$dram_path/bin:$dram_path/sbin:\$PATH
-export DYLD_LIBRARY_PATH=$dram_path/lib
-export LD_LIBRARY_PATH=$dram_path/lib
+
 export DRAM_CMAKE_FLAGS="-DCMAKE_INSTALL_PREFIX=$dram_path -DCMAKE_PREFIX_PATH=$dram_path"
 export DRAM_CONFIGURE_FLAGS="--prefix=$dram_path"
+
+export $LIB_PATH_VARNAME=$dram_path/lib
+EOF
+}
+
+function dram_create_plain_with_python () {
+    local dram_path=$1
+    local platform=$(uname)
+    echo "Creating plain dram in '$dram_path'."
+    mkdir $dram_path/bin
+    mkdir $dram_path/source
+
+    if [ "$platform" == "Darwin" ]
+    then
+        LIB_PATH_VARNAME="DYLD_LIBRARY_PATH"
+    else
+        LIB_PATH_VARNAME="LD_LIBRARY_PATH"
+    fi
+
+    virtualenv --system-site-packages -p `which python2.7` $dram_path/pyenv
+
+    cat > $dram_path/bin/activate <<EOF
+export PATH=$dram_path/bin:$dram_path/sbin:\$PATH
+
+export DRAM_CMAKE_FLAGS="-DCMAKE_INSTALL_PREFIX=$dram_path -DCMAKE_PREFIX_PATH=$dram_path"
+export DRAM_CONFIGURE_FLAGS="--prefix=$dram_path"
+
+source $dram_path/pyenv/bin/activate
+
+export $LIB_PATH_VARNAME=$dram_path/lib:\${VIRTUAL_ENV}/lib
 EOF
 }
 
@@ -109,6 +147,9 @@ function dram_create () {
     case $new_dram_type in
         plain)
             dram_create_plain $new_dram_path
+            ;;
+        plain-with-python)
+            dram_create_plain_with_python $new_dram_path
             ;;
         macports)
             dram_create_macports $new_dram_path
