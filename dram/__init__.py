@@ -9,7 +9,7 @@ from datetime import datetime
 from six.moves import input
 
 
-__version__ = '0.0.1.dev'
+__version__ = '0.0.2'
 
 DEFAULT_ROOT = '/dram'
 
