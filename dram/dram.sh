@@ -10,7 +10,15 @@ function dram_version () {
 }
 
 function dram_list () {
-    ls $DRAM_ROOT
+    for dram_dir in $DRAM_ROOT/*; do
+        dram_name=$(basename $dram_dir)
+        if [[ $dram_name == $DRAM ]]
+        then
+            echo "$dram_name *"
+        else
+            echo "$dram_name"
+        fi
+    done
 }
 
 function dram_create_plain () {
