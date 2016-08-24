@@ -140,8 +140,14 @@ function dram_create () {
     fi
     local new_dram_name="$1"
 
-    echo "Creating new dram '$new_dram_name' of type '$new_dram_type'."
     local new_dram_path=$DRAM_ROOT/$new_dram_name
+    if [[ -d $new_dram_path ]]
+    then
+        echo "Dram with name '$new_dram_path' already exists!"
+        return
+    fi
+
+    echo "Creating new dram '$new_dram_name' of type '$new_dram_type'."
     mkdir -p $new_dram_path
 
     case $new_dram_type in
