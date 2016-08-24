@@ -122,6 +122,12 @@ EOF
 }
 
 function dram_create () {
+
+    if [[ -n $DRAM ]]
+    then
+        echo "Already in a dram ('$DRAM'), unable to create new dram!"
+        return
+    fi
     # Defaults
     local new_dram_type=plain
     # Parse args
