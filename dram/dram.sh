@@ -61,7 +61,7 @@ function dram_create_plain_with_python () {
 
     virtualenv --system-site-packages -p `which python2.7` $dram_path/pyenv
     mkdir -p $dram_path/lib/python2.7
-    ln -sf $dram_path/lib/python2.7/site-packages $dram_path/pyenv/lib/python2.7/site-packages
+    ln -sf $dram_path/pyenv/lib/python2.7/site-packages $dram_path/lib/python2.7/site-packages
 
     cat > $dram_path/bin/activate <<EOF
 export PATH=$dram_path/bin:$dram_path/sbin:\$PATH
