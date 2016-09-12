@@ -10,15 +10,51 @@ function dram_version () {
 }
 
 function dram_list () {
+    show_info=false
+    for arg in "$@" ; do
+        case "$arg" in
+            -l)
+                show_info=true
+                ;;
+        esac
+    done
+    # need to iterate through 2x to find the longest dram name
+    # so we can print a nice table output
+    longest_dram_name=0
+    if [[ $show_info == true ]]
+    then
+        for dram_dir in $DRAM_ROOT/*; do
+            dram_name=$(basename $dram_dir)
+            name_len=${#dram_name} 
+            longest_dram_name=$(($name_len>$longest_dram_name?$name_len:$longest_dram_name))
+        done
+    fi
     for dram_dir in $DRAM_ROOT/*; do
         dram_name=$(basename $dram_dir)
+        cur_dram=""
         if [[ $dram_name == $DRAM ]]
         then
-            echo "$dram_name *"
-        else
-            echo "$dram_name"
+            cur_dram="*"
         fi
+        dram_info=""
+        if [[ $show_info == true ]]
+        then
+            # Get dram size
+            du_output=($(du -hcs $DRAM_ROOT/$dram_name))
+            dram_size=${du_output[0]}
+            #echo $dram_size
+            dram_info=$dram_size
+            dram_newline="\n"
+        else
+            dram_newline=""
+        fi
+        format_str="%${longest_dram_name}s %s\t%s%b"
+        printf "$format_str"  "$dram_name" "$cur_dram" "$dram_info" $dram_newline
     done
+    if [[ $show_info != true ]]
+    then
+        printf "\n"
+    fi
 }
 
 function dram_create_plain () {
