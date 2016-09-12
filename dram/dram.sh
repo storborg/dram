@@ -221,6 +221,20 @@ function dram_create () {
             ;;
     esac
 
+    # if os x and version is at least 10.11 (darwin version 15)
+    if [[ "$(uname -s)" == "Darwin" ]]
+    then
+        # this only applies to versions >= 10.11
+        local darwin_version=$(uname -r)
+        if [[ ${darwin_version:0:2} -ge 15 ]]
+        then
+            # SIP prevents /usr/bin/lldb from picking up the DYLD_LIBRARY_PATH
+            # This alias points to the actual executable and forwards the
+            # DYLD_LIBRARY_PATH so lldb can actually be used
+            printf "alias lldb=\"DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH /Applications/Xcode.app/Contents/Developer/usr/bin/lldb\"" >> $new_dram_path/bin/activate
+        fi
+    fi
+
     dram_use $new_dram_name
 }
 
