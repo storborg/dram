@@ -300,6 +300,12 @@ function dram_destroy () {
         return
     fi
 
+    if [[ $DRAM == $destroy_dram ]]
+    then
+        echo "Can't destroy currently active dram!"
+        return
+    fi
+
     echo "About to destory the dram '$destroy_dram' and wipe out '$destroy_path'."
     read -p "Are you sure? [y/N] " confirm
     if [[ "$confirm" == "y" ]]
