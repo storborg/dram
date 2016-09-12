@@ -351,6 +351,7 @@ function dram_usage () {
     echo "  destroy"
     echo "  promote"
     echo "  demote"
+    echo "  cdsource"
     echo "  help"
 }
 
