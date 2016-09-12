@@ -1,6 +1,6 @@
 dram_version=0.0.3.dev
 
-if [ "$DRAM_ROOT" = "" ]
+if [[ "$DRAM_ROOT" = "" ]]
 then
     DRAM_ROOT="/dram"
 fi
@@ -28,7 +28,7 @@ function dram_create_plain () {
     mkdir $dram_path/bin
     mkdir $dram_path/source
 
-    if [ "$platform" == "Darwin" ]
+    if [[ $platform == "Darwin" ]]
     then
         LIB_PATH_VARNAME="DYLD_LIBRARY_PATH"
     else
@@ -52,7 +52,7 @@ function dram_create_plain_with_python () {
     mkdir $dram_path/bin
     mkdir $dram_path/source
 
-    if [ "$platform" == "Darwin" ]
+    if [[ $platform == "Darwin" ]]
     then
         LIB_PATH_VARNAME="DYLD_LIBRARY_PATH"
     else
@@ -216,7 +216,7 @@ function dram_use () {
     fi
 
     type dram_hook_preactivate >/dev/null 2>&1
-    if [ $? -eq 0 ]
+    if [[ $? -eq 0 ]]
     then
         dram_hook_preactivate $new_dram $new_dram_prefix
     fi
@@ -227,7 +227,7 @@ function dram_use () {
     DRAM_PREFIX=$new_dram_prefix
 
     type dram_hook_postactivate >/dev/null 2>&1
-    if [ $? -eq 0 ]
+    if [[ $? -eq 0 ]]
     then
         dram_hook_postactivate $new_dram $new_dram_prefix
     fi
@@ -243,7 +243,7 @@ function dram_destroy () {
     local destroy_dram=$1
     local destroy_path=$DRAM_ROOT/$destroy_dram
 
-    if [ ! -e "$destroy_path" ]
+    if [[ ! -e $destroy_path ]]
     then
         echo "A dram named '$destroy_dram' does not exist."
         return
