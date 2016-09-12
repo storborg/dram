@@ -217,6 +217,7 @@ function dram_create () {
             ;;
         *)
             echo "Dram type '$new_dram_type' not supported, giving up."
+            return
             ;;
     esac
 
