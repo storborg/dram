@@ -48,7 +48,7 @@ function dram_list () {
         else
             dram_newline=""
         fi
-        format_str="%${longest_dram_name}s %s\t%s%b"
+        format_str="%${longest_dram_name}s%s\t%s%b"
         printf "$format_str"  "$dram_name" "$cur_dram" "$dram_info" $dram_newline
     done
     if [[ $show_info != true ]]
