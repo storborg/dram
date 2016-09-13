@@ -484,3 +484,27 @@ function dram () {
             ;;
     esac
 }
+
+# tab completion for dram
+_dram() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="version list create use destroy promote demote cdsource help"
+
+    if [[ ${prev} == "dram" ]]
+    then
+        # if the user has already typed dram, then complete subcommands
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+    if [[ ${prev} == "use" ||  ${prev} == "destroy" ]]
+    then
+        # Get list of drams here
+        local drams_list=$(ls $DRAM_ROOT)
+        COMPREPLY=( $(compgen -W "${drams_list}" -- ${cur}) )
+        return 0
+    fi
+}
+complete -F _dram dram
