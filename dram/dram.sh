@@ -57,6 +57,39 @@ function dram_list () {
     fi
 }
 
+# Function to setup an alias for lldb for the dram given in $1
+function dram_add_lldb_alias() {
+    # if os x and version is at least 10.11 (darwin version 15)
+    if [[ "$(uname -s)" == "Darwin" ]]
+    then
+        # this only applies to versions >= 10.11
+        local darwin_version=$(uname -r)
+        if [[ ${darwin_version:0:2} -ge 15 ]]
+        then
+            printf "Setting up alias for lldb\n"
+            # SIP prevents /usr/bin/lldb from picking up the DYLD_LIBRARY_PATH
+            # This alias points to the actual executable and forwards the
+            # DYLD_LIBRARY_PATH so lldb can actually be used
+            printf "alias lldb=\"DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH /Applications/Xcode.app/Contents/Developer/usr/bin/lldb\"\n" >> $1/bin/activate
+        fi
+    fi
+}
+
+
+# Function to setup an alias for sudo for the dram given in $1
+function dram_add_sudo_alias() {
+    cat >> $1/bin/activate <<EOF
+    function sudo() {
+        read -p "Dram is active, are you sure you want to run with sudo? [y/N] " confirm
+        if [[ "\$confirm" == "y" ]]
+        then
+            /usr/bin/sudo "\$@"
+        fi
+    }
+EOF
+}
+
+
 function dram_create_plain () {
     local dram_path=$1
     local platform=$(uname)
@@ -79,6 +112,9 @@ export DRAM_CONFIGURE_FLAGS="--prefix=$dram_path"
 
 export $LIB_PATH_VARNAME=$dram_path/lib
 EOF
+    
+    dram_add_lldb_alias $dram_path
+    dram_add_sudo_alias $dram_path
 }
 
 function dram_create_plain_with_python () {
@@ -109,6 +145,8 @@ source $dram_path/pyenv/bin/activate
 
 export $LIB_PATH_VARNAME=$dram_path/lib:\${VIRTUAL_ENV}/lib
 EOF
+    dram_add_lldb_alias $dram_path
+    dram_add_sudo_alias $dram_path
 }
 
 function dram_create_macports () {
@@ -140,6 +178,8 @@ EOF
     # FIXME may want to add 'startupitem_install no' to macports.conf
 
     echo "Done."
+    dram_add_lldb_alias $dram_path
+    dram_add_sudo_alias $dram_path
 }
 
 function dram_create_homebrew () {
@@ -157,6 +197,8 @@ EOF
 
 
     echo "Done."
+    dram_add_lldb_alias $dram_path
+    dram_add_sudo_alias $dram_path
 }
 
 function dram_create () {
@@ -220,20 +262,6 @@ function dram_create () {
             return
             ;;
     esac
-
-    # if os x and version is at least 10.11 (darwin version 15)
-    if [[ "$(uname -s)" == "Darwin" ]]
-    then
-        # this only applies to versions >= 10.11
-        local darwin_version=$(uname -r)
-        if [[ ${darwin_version:0:2} -ge 15 ]]
-        then
-            # SIP prevents /usr/bin/lldb from picking up the DYLD_LIBRARY_PATH
-            # This alias points to the actual executable and forwards the
-            # DYLD_LIBRARY_PATH so lldb can actually be used
-            printf "alias lldb=\"DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH /Applications/Xcode.app/Contents/Developer/usr/bin/lldb\"" >> $new_dram_path/bin/activate
-        fi
-    fi
 
     dram_use $new_dram_name
 }
