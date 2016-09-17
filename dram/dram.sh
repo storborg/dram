@@ -430,7 +430,15 @@ function dram_cmake () {
         return
     fi
 
-    cmake $DRAM_CMAKE_FLAGS $@
+    local dram_prefix="$DRAM_ROOT/$DRAM"
+    if [[ pwd != $dram_prefix* ]]
+    then
+        read -p "Your current working directory is not inside the active dram. Are you sure you wish to run cmake? [y/N] " confirm
+        if [[ "$confirm" == "y" ]]
+        then
+            cmake $DRAM_CMAKE_FLAGS $@
+        fi
+    fi
 }
 
 function dram_configure () {
@@ -440,7 +448,15 @@ function dram_configure () {
         return
     fi
 
-    ./configure $DRAM_CONFIGURE_FLAGS $@
+    local dram_prefix="$DRAM_ROOT/$DRAM"
+    if [[ pwd != $dram_prefix* ]]
+    then
+        read -p "Your current working directory is not inside the active dram. Are you sure you wish to run ./configure? [y/N] " confirm
+        if [[ "$confirm" == "y" ]]
+        then
+            ./configure $DRAM_CONFIGURE_FLAGS $@
+        fi
+    fi
 }
 
 function dram_usage () {
@@ -489,13 +505,13 @@ function dram () {
             dram_demote $@
             ;;
         cdsource)
-            dram_cdsource $0
+            dram_cdsource $@
             ;;
         cmake)
-            dram_cmake $0
+            dram_cmake $@
             ;;
         configure)
-            dram_configure $0
+            dram_configure $@
             ;;
         -h|--help|help)
             dram_help $@
