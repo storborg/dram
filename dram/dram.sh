@@ -47,17 +47,10 @@ function dram_list () {
             dram_size=${du_output[0]}
             #echo $dram_size
             dram_info=$dram_size
-            dram_newline="\n"
-        else
-            dram_newline=""
         fi
         format_str="%${longest_dram_name}s%s\t%s%b"
-        printf "$format_str"  "$dram_name" "$cur_dram" "$dram_info" $dram_newline
+        printf "$format_str"  "$dram_name" "$cur_dram" "$dram_info" "\n"
     done
-    if [[ $show_info != true ]]
-    then
-        printf "\n"
-    fi
 }
 
 # Function to setup an alias for lldb for the dram given in $1
