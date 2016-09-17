@@ -1,5 +1,8 @@
 dram_version=0.0.3.dev
 
+orig_cmake=$(which cmake)
+orig_sudo=$(which sudo)
+
 if [[ "$DRAM_ROOT" = "" ]]
 then
     DRAM_ROOT="/dram"
@@ -76,17 +79,14 @@ function dram_add_lldb_alias() {
 }
 
 
-# Function to setup an alias for sudo for the dram given in $1
-function dram_add_sudo_alias() {
-    cat >> $1/bin/activate <<EOF
-    function sudo() {
-        read -p "Dram is active, are you sure you want to run with sudo? [y/N] " confirm
-        if [[ "\$confirm" == "y" ]]
-        then
-            /usr/bin/sudo "\$@"
-        fi
-    }
-EOF
+function dram_confirm_unsafe() {
+    local orig_path=$1
+    read -p "Dram is active, are you sure you want to execute $orig_path? [y/N] " confirm
+    if [[ "$confirm" == "y" ]]
+    then
+        shift
+        $orig_path "$@"
+    fi
 }
 
 
@@ -112,9 +112,8 @@ export DRAM_CONFIGURE_FLAGS="--prefix=$dram_path"
 
 export $LIB_PATH_VARNAME=$dram_path/lib
 EOF
-    
+
     dram_add_lldb_alias $dram_path
-    dram_add_sudo_alias $dram_path
 }
 
 function dram_create_plain_with_python () {
@@ -146,7 +145,6 @@ source $dram_path/pyenv/bin/activate
 export $LIB_PATH_VARNAME=$dram_path/lib:\${VIRTUAL_ENV}/lib
 EOF
     dram_add_lldb_alias $dram_path
-    dram_add_sudo_alias $dram_path
 }
 
 function dram_create_macports () {
@@ -179,7 +177,6 @@ EOF
 
     echo "Done."
     dram_add_lldb_alias $dram_path
-    dram_add_sudo_alias $dram_path
 }
 
 function dram_create_homebrew () {
@@ -198,7 +195,6 @@ EOF
 
     echo "Done."
     dram_add_lldb_alias $dram_path
-    dram_add_sudo_alias $dram_path
 }
 
 function dram_create () {
@@ -304,6 +300,13 @@ function dram_use () {
     source $activate_path
     DRAM=$new_dram
     DRAM_PREFIX=$new_dram_prefix
+
+    if [[ $DRAM_NO_WARNINGS -ne 1 ]]
+    then
+        # override sudo, cmake, and possibly others to warn before use
+        alias sudo="dram_confirm_unsafe $orig_sudo"
+        alias cmake="dram_confirm_unsafe $orig_cmake"
+    fi
 
     type dram_hook_postactivate >/dev/null 2>&1
     if [[ $? -eq 0 ]]
@@ -427,6 +430,26 @@ function dram_cdsource () {
     cd "$DRAM_ROOT/$DRAM/source"
 }
 
+function dram_cmake () {
+    if [[ -z "$DRAM" ]]
+    then
+        echo "No dram activated."
+        return
+    fi
+
+    cmake $DRAM_CMAKE_FLAGS $@
+}
+
+function dram_configure () {
+    if [[ -z "$DRAM" ]]
+    then
+        echo "No dram activated."
+        return
+    fi
+
+    ./configure $DRAM_CONFIGURE_FLAGS $@
+}
+
 function dram_usage () {
     echo "Available subcommands:"
     echo "  version"
@@ -475,6 +498,12 @@ function dram () {
         cdsource)
             dram_cdsource $0
             ;;
+        cmake)
+            dram_cmake $0
+            ;;
+        configure)
+            dram_configure $0
+            ;;
         -h|--help|help)
             dram_help $@
             ;;
@@ -491,7 +520,7 @@ _dram() {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="version list create use destroy promote demote cdsource help"
+    opts="version list create use destroy promote demote cdsource cmake configure help"
 
     if [[ ${prev} == "dram" ]]
     then
