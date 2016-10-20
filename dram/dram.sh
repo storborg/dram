@@ -550,5 +550,11 @@ _dram() {
         COMPREPLY=( $(compgen -W "${drams_list}" -- ${cur}) )
         return 0
     fi
+    if [[ ${prev} == "-t" ]]
+    then
+        local dram_types="plain plain-with-python macports hombrew"
+        COMPREPLY=( $(compgen -W "${dram_types}" -- ${cur}) )
+        return 0
+    fi
 }
 complete -F _dram dram
