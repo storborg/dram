@@ -230,6 +230,16 @@ function dram_create () {
         return
     fi
 
+    local dram_name_regex="^[a-z0-9][a-z0-9-]*$"
+    if [[ $new_dram_name =~ $dram_name_regex ]]
+    then
+        # this is the noop command in bash
+        :
+    else
+        echo "Invalid name for new dram '$new_dram_name'!"
+        return
+    fi
+
     echo "Creating new dram '$new_dram_name' of type '$new_dram_type'."
     mkdir -p $new_dram_path
 
