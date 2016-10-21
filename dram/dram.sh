@@ -316,6 +316,11 @@ function dram_use () {
     then
         dram_hook_postactivate $new_dram $new_dram_prefix
     fi
+
+    if [[ -n $DRAM_AUTO_CDSOURCE ]]
+    then
+        cd "$DRAM_ROOT/$DRAM/source"
+    fi
 }
 
 function dram_destroy () {

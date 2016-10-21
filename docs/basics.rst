@@ -54,6 +54,9 @@ Creating a dram automatically switches to it, but if you want to switch to an al
 
     $ dram use example
 
+Note that if you have set the DRAM_AUTO_CDSOURCE environment variable, then dram will automatically 
+switch to the source directory of the current dram whenever you do `dram cdsource`
+
 Listing Drams
 -------------
 
