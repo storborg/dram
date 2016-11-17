@@ -21,6 +21,10 @@ function dram_list () {
                 ;;
         esac
     done
+    # Set glob to nullglob so we don't show stuff when DRAM_ROOT
+    # is empty
+    shopt -s nullglob
+
     # need to iterate through 2x to find the longest dram name
     # so we can print a nice table output
     longest_dram_name=0
@@ -51,6 +55,9 @@ function dram_list () {
         format_str="%${longest_dram_name}s%s\t%s%b"
         printf "$format_str"  "$dram_name" "$cur_dram" "$dram_info" "\n"
     done
+
+    # Unset nullglob
+    shopt -u nullglob
 }
 
 # Function to setup an alias for lldb for the dram given in $1
