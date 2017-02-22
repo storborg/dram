@@ -497,6 +497,8 @@ function dram_usage () {
     echo "  promote"
     echo "  demote"
     echo "  cdsource"
+    echo "  configure"
+    echo "  cmake"
     echo "  help"
 }
 
