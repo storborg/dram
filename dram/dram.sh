@@ -475,7 +475,7 @@ function dram_configure () {
 
     local dram_prefix="$DRAM_ROOT/$DRAM"
     local cwd=$(pwd)
-    if [[ pwd != $dram_prefix* ]]
+    if [[ $cwd != $dram_prefix* ]]
     then
         read -p "Your current working directory is not inside the active dram. Are you sure you wish to run ./configure? [y/N] " confirm
         if [[ "$confirm" != "y" ]]
