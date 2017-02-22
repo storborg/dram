@@ -504,7 +504,60 @@ function dram_usage () {
 
 function dram_help () {
     dram_version
-    dram_usage
+    case $1 in
+        version)
+            printf "usage: dram version\n"
+            printf "Print the current dram version\n"
+        ;;
+
+        list)
+            printf "usage: dram list\n"
+            printf "List current drams\n"
+            printf "\n"
+            printf "  -l\tShow size of drams\n"
+        ;;
+        create)
+            printf "usage: dram create -t <type> <name>\n"
+            printf "Create a new dram with the given name and type and use it\n"
+            printf "\n"
+            printf "  -t,--type\tSpecify dram type (plain, plain-with-python, macports, homebrew), required option\n"
+        ;;
+        use)
+            printf "usage: dram use <name>\n"
+            printf "Use the dram with the given name\n"
+        ;;
+        destroy)
+            printf "usage: dram destroy <name>\n"
+            printf "Delete the given dram. Must not be the currently active dram\n"
+        ;;
+        promote)
+            printf "usage: dram promote <name>\n"
+            printf "Create a symlink for the given executable from the active dram to the global environment\n"
+
+        ;;
+        demote)
+            printf "usage: dram demote <name>\n"
+            printf "Remove a symlink for the given executable from the active dram to the global environment\n"
+
+        ;;
+        cdsource)
+            printf "usage: dram cdsource\n"
+            printf "Change to the source directory of the active dram\n"
+
+        ;;
+        configure)
+            printf "usage: dram configure\n"
+            printf "Run ./configure in the current directory with the correct arguments for the dram, all other arguments are passed through\n"
+
+        ;;
+        cmake)
+            printf "usage: dram cmake\n"
+            printf "Run cmake in the current directory with the correct arguments for the dram, all other arguments are passed through\n"
+        ;;
+        *)
+            dram_usage
+        ;;
+    esac
 }
 
 
@@ -559,7 +612,8 @@ _dram() {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="version list create use destroy promote demote cdsource cmake configure help"
+    optsnohelp="version list create use destroy promote demote cdsource cmake configure"
+    opts="$optsnohelp help"
 
     if [[ ${prev} == "dram" ]]
     then
@@ -580,5 +634,12 @@ _dram() {
         COMPREPLY=( $(compgen -W "${dram_types}" -- ${cur}) )
         return 0
     fi
+    if [[ ${prev} == "help" ]]
+    then
+        # if the user has already typed dram help, then complete subcommands except for help
+        COMPREPLY=( $(compgen -W "${optsnohelp}" -- ${cur}) )
+        return 0
+    fi
+
 }
 complete -F _dram dram
