@@ -118,7 +118,29 @@ EOF
 
 function dram_create_plain_with_python () {
     local dram_path=$1
+    # drop the dram path arg so we can do the rest 
+    # of the argument parsing without worrying about it
+    shift 
     local platform=$(uname)
+
+    # Parse the python version and system-site-packages options
+    local python_version_opt=""
+    local system_site_packages_opt=""
+
+    local opts=`getopt -o p: --long python:,system-site-packages -n 'dram' -- "$@"`
+
+    if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+
+    eval set -- "$opts"
+    while true; do
+    case "$1" in
+        -p | --python ) local python_version_opt="-p $2"; shift ;;
+        --system-site-packages )    local system_site_packages_opt="--system-site-packages"; shift ;;
+        -- ) shift; break ;;
+        * ) break ;;
+    esac
+    done
+
     echo "Creating plain dram in '$dram_path'."
     mkdir $dram_path/bin
     mkdir $dram_path/source
@@ -130,9 +152,25 @@ function dram_create_plain_with_python () {
         LIB_PATH_VARNAME="LD_LIBRARY_PATH"
     fi
 
-    virtualenv --system-site-packages -p `which python2.7` $dram_path/pyenv
-    mkdir -p $dram_path/lib/python2.7
-    ln -sf $dram_path/pyenv/lib/python2.7/site-packages $dram_path/lib/python2.7/site-packages
+    virtualenv $system_site_packages_opt $python_version_opt $dram_path/pyenv
+    # figure out exactly what python version got used
+    local exact_python_version=""
+    for entry in "$dram_path"/pyenv/lib/*
+    do
+        local entry_base=`basename $entry`
+        if [[ $entry_base =~ ^python.* ]]
+        then
+            exact_python_version=$entry_base
+            break
+        fi
+    done
+    local python_exe_location=`readlink -f python`
+    
+    YELLOW='\033[0;33m'       # Yellow
+    NC='\033[0m' # No Color
+    echo -e "Using python version ${YELLOW}'$exact_python_version'${NC} located at ${YELLOW}'$python_exe_location'${NC}"
+    mkdir -p $dram_path/lib/$exact_python_version
+    ln -sf $dram_path/pyenv/lib/$exact_python_version/site-packages $dram_path/lib/$exact_python_version/site-packages
 
     cat > $dram_path/bin/activate <<EOF
 export PATH=$dram_path/bin:$dram_path/sbin:\$PATH
@@ -214,6 +252,8 @@ function dram_create () {
             -t|--type)
                 local new_dram_type="$2"
                 shift
+                shift
+                break
                 ;;
             *)
                 echo "Unrecognized option '$key'."
@@ -223,12 +263,20 @@ function dram_create () {
         shift
     done
 
-    if [[ $# -ne 1 ]]
+    # Check if we didn't get anything after the type
+    if [[ $# -lt 1 ]]
     then
         echo "Usage: dram create [-t type] <name>"
         return
     fi
-    local new_dram_name="$1"
+
+    # Otherwise, assume that the last thing is the name and everything
+    # else is args for the specific dram ctor function
+    local new_dram_name="${@: -1}"
+
+    # Remove the name from the args so that it doesn't trip up the
+    # later functions
+    local extra_dram_args="${@:1:$(($#-1))}"
 
     local new_dram_path=$DRAM_ROOT/$new_dram_name
     if [[ -d $new_dram_path ]]
@@ -252,16 +300,16 @@ function dram_create () {
 
     case $new_dram_type in
         plain)
-            dram_create_plain $new_dram_path
+            dram_create_plain $new_dram_path $extra_dram_args
             ;;
         plain-with-python)
-            dram_create_plain_with_python $new_dram_path
+            dram_create_plain_with_python $new_dram_path $extra_dram_args
             ;;
         macports)
-            dram_create_macports $new_dram_path
+            dram_create_macports $new_dram_path $extra_dram_args
             ;;
         homebrew)
-            dram_create_homebrew $new_dram_path
+            dram_create_homebrew $new_dram_path $extra_dram_args
             ;;
         *)
             echo "Dram type '$new_dram_type' not supported, giving up."
