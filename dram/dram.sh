@@ -134,10 +134,22 @@ function dram_create_plain_with_python () {
     eval set -- "$opts"
     while true; do
     case "$1" in
-        -p | --python ) local python_version_opt="-p $2"; shift ;;
-        --system-site-packages )    local system_site_packages_opt="--system-site-packages"; shift ;;
-        -- ) shift; break ;;
-        * ) break ;;
+        -p | --python )
+            python_version_opt="-p $2"
+            shift
+            shift
+            ;;
+        --system-site-packages )    
+            system_site_packages_opt="--system-site-packages"
+            shift
+            ;;
+        -- )
+            shift
+            break
+            ;;
+        * ) 
+            break
+            ;;
     esac
     done
 
