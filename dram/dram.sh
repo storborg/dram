@@ -178,8 +178,8 @@ function dram_create_plain_with_python () {
     done
     local python_exe_location=`readlink -f python`
     
-    YELLOW='\033[0;33m'       # Yellow
-    NC='\033[0m' # No Color
+    local YELLOW='\033[0;33m'       # Yellow
+    local NC='\033[0m' # No Color
     echo -e "Using python version ${YELLOW}'$exact_python_version'${NC} located at ${YELLOW}'$python_exe_location'${NC}"
     mkdir -p $dram_path/lib/$exact_python_version
     ln -sf $dram_path/pyenv/lib/$exact_python_version/site-packages $dram_path/lib/$exact_python_version/site-packages
