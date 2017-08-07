@@ -391,34 +391,73 @@ function dram_use () {
 }
 
 function dram_destroy () {
-    if [[ $# -ne 1 ]]
+    if [[ $# -lt 1 ]]
     then
-        echo "Usage: dram destroy <name>"
+        echo "Usage: dram destroy [-f] <names>"
         return
     fi
 
-    local destroy_dram=$1
-    local destroy_path=$DRAM_ROOT/$destroy_dram
+    local drams_to_destroy=""
+    local force_delete=false
 
-    if [[ ! -e $destroy_path ]]
-    then
-        echo "A dram named '$destroy_dram' does not exist."
-        return
-    fi
+    local opts=`getopt -o f -l force -n 'dram' -- "$@"`
+    eval set -- "$opts"
+    while true; do
+    case "$1" in
+        -f | --force)
+            force_delete=true
+            shift
+            ;;
+        -- )
+            shift;
+            break
+            ;;
+        * )
+            break
+            ;;
+    esac
+    done
 
-    if [[ $DRAM == $destroy_dram ]]
-    then
-        echo "Can't destroy currently active dram!"
-        return
-    fi
+    for dram_name in "$@"
+    do
+        local destroy_path=$DRAM_ROOT/$dram_name
+        if [[ ! -e $destroy_path ]]
+        then
+            echo "A dram named '$dram_name' does not exist."
+            return
+        fi
 
-    echo "About to destory the dram '$destroy_dram' and wipe out '$destroy_path'."
-    read -p "Are you sure? [y/N] " confirm
-    if [[ "$confirm" == "y" ]]
-    then
-        rm -rf $destroy_path
-        echo "Destroyed."
-    fi
+        if [[ $DRAM == $dram_name ]]
+        then
+            echo "Can't destroy currently active dram!"
+            return
+        fi
+
+        if [[ "$drams_to_destroy" =~ (^| )$dram_name( |$) ]]
+        then
+            echo "Dram '$dram_name' specified multiple times!" 
+            return
+        fi
+
+        drams_to_destroy="$dram_name $drams_to_destroy"
+
+    done
+
+    for dram_name in $drams_to_destroy
+    do
+        local destroy_path=$DRAM_ROOT/$dram_name
+        confirm="y"
+        if [[ $force_delete == false ]]
+        then
+            echo "About to destory the dram '$dram_name' and wipe out '$destroy_path'."
+            read -p "Are you sure? [y/N] " confirm
+        fi
+        if [[ "$confirm" == "y" ]]
+        then
+            rm -rf $destroy_path
+            echo "Destroyed '$dram_name'."
+        fi
+    done
 }
 
 function dram_promote () {
