@@ -164,7 +164,8 @@ function dram_create_plain_with_python () {
         LIB_PATH_VARNAME="LD_LIBRARY_PATH"
     fi
 
-    virtualenv $system_site_packages_opt $python_version_opt $dram_path/pyenv
+    local dram_base_name=`basename $dram_path`
+    virtualenv $system_site_packages_opt $python_version_opt --prompt="($dram_base_name) " $dram_path/pyenv
     # figure out exactly what python version got used
     local exact_python_version=""
     for entry in "$dram_path"/pyenv/lib/*
