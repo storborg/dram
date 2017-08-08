@@ -627,8 +627,9 @@ function dram_help () {
             printf "Use the dram with the given name\n"
         ;;
         destroy)
-            printf "usage: dram destroy <name>\n"
-            printf "Delete the given dram. Must not be the currently active dram\n"
+            printf "usage: dram destroy [-f] <names>\n"
+            printf "Deletes the given drams. Must not be the currently active dram\n"
+            printf "  -f\tDon't ask before destroying drams\n"
         ;;
         promote)
             printf "usage: dram promote <name>\n"
