@@ -721,7 +721,7 @@ _dram() {
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
         return 0
     fi
-    if [[ ${prev} == "use" ||  ${prev} == "destroy" ]]
+    if [[ ${prev} == "use" ||  ${prev} == "destroy" || ${COMP_WORDS[1]} == "destroy" ]]
     then
         # Get list of drams here
         local drams_list=$(ls $DRAM_ROOT)
