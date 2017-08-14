@@ -13,6 +13,8 @@ function dram_version () {
 }
 
 function dram_list () {
+    local YELLOW='\033[0;33m' # Yellow
+    local NC='\033[0m' # No Color
     show_info=false
     for arg in "$@" ; do
         case "$arg" in
@@ -39,9 +41,13 @@ function dram_list () {
     for dram_dir in $DRAM_ROOT/*; do
         dram_name=$(basename $dram_dir)
         cur_dram=""
+        color_start=""
+        color_end=""
         if [[ $dram_name == $DRAM ]]
         then
             cur_dram="*"
+            color_start="${YELLOW}"
+            color_end="${NC}"
         fi
         dram_info=""
         if [[ $show_info == true ]]
@@ -52,7 +58,7 @@ function dram_list () {
             #echo $dram_size
             dram_info=$dram_size
         fi
-        format_str="%${longest_dram_name}s%s\t%s%b"
+        format_str="${color_start}%${longest_dram_name}s%s\t%s%b${color_end}"
         printf "$format_str"  "$dram_name" "$cur_dram" "$dram_info" "\n"
     done
 
@@ -179,7 +185,7 @@ function dram_create_plain_with_python () {
     done
     local python_exe_location=`readlink -f python`
     
-    local YELLOW='\033[0;33m'       # Yellow
+    local YELLOW='\033[0;33m' # Yellow
     local NC='\033[0m' # No Color
     echo -e "Using python version ${YELLOW}'$exact_python_version'${NC} located at ${YELLOW}'$python_exe_location'${NC}"
     mkdir -p $dram_path/lib/$exact_python_version
