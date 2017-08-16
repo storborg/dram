@@ -13,7 +13,7 @@ function dram_version () {
 }
 
 function dram_list () {
-    local YELLOW='\033[0;33m' # Yellow
+    local GREEN='\033[0;32m' # Green
     local NC='\033[0m' # No Color
     show_info=false
     for arg in "$@" ; do
@@ -46,7 +46,7 @@ function dram_list () {
         if [[ $dram_name == $DRAM ]]
         then
             cur_dram="*"
-            color_start="${YELLOW}"
+            color_start="${GREEN}"
             color_end="${NC}"
         fi
         dram_info=""
