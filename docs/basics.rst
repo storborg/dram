@@ -23,6 +23,9 @@ Dram Types
   a ``./configure`` script or similar mechanism. They are not populated with
   any initial files or directories, but set up environment variables that will 
 
+* **Plain-with-python** drams are the same as Plain drams with the addition of
+  an integrated python virtual environment for the dram.
+
 * **Homebrew** drams populate an instance of `Homebrew <http://brew.sh/>`_.
 
 * **Macports** drams populate an instance of `MacPorts <https://www.macports.org/>`_.
@@ -47,6 +50,10 @@ To create a dram of a particular type::
 
     $ dram create -t macports example
 
+When creating a dram of type ``plain-with-python`` you can also pass the
+``-p`` and ``--system-site-packages`` flags and they will be passed through
+to the virtual environement when it is created for that dram.
+
 Using The Dram
 --------------
 
@@ -63,6 +70,8 @@ Listing Drams
 List all the current drams in your root::
 
     $ dram list
+
+If the ``-l`` flag is passed to ``dram list``, then the size of each dram on disk will be printed as well.
 
 Destroying a Dram
 -----------------
