@@ -548,7 +548,21 @@ function dram_cdsource () {
         return
     fi
 
-    cd "$DRAM_ROOT/$DRAM/source"
+    if [[ $# -gt 0 ]]
+    then
+        local source_dir_name=$1
+        for _dir in $DRAM_ROOT/$DRAM/source/*"${source_dir_name}"*; do
+            [ -d "${_dir}" ] && local dir="${_dir}" && break
+        done
+        if [[ -z $dir ]]
+        then
+            echo "No matching source directory found"
+        else
+            cd "$dir"
+        fi
+    else
+        cd "$DRAM_ROOT/$DRAM/source"
+    fi
 }
 
 function dram_cmake () {
@@ -733,6 +747,12 @@ _dram() {
         # Get list of drams here
         local drams_list=$(ls $DRAM_ROOT)
         COMPREPLY=( $(compgen -W "${drams_list}" -- ${cur}) )
+        return 0
+    fi
+    if [[ ${prev} == "cdsource" ]]
+    then
+        local dram_source_dirs=$(ls $DRAM_ROOT/$DRAM/source)
+        COMPREPLY=( $(compgen -W "${dram_source_dirs}" -- ${cur}) )
         return 0
     fi
     if [[ ${prev} == "-t" ]]
