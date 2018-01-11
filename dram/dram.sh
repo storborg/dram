@@ -745,13 +745,13 @@ _dram() {
     if [[ ${prev} == "use" ||  ${prev} == "destroy" || ${COMP_WORDS[1]} == "destroy" ]]
     then
         # Get list of drams here
-        local drams_list=$(ls $DRAM_ROOT)
+        local drams_list=$(ls --color=never $DRAM_ROOT)
         COMPREPLY=( $(compgen -W "${drams_list}" -- ${cur}) )
         return 0
     fi
     if [[ ${prev} == "cdsource" ]]
     then
-        local dram_source_dirs=$(ls $DRAM_ROOT/$DRAM/source)
+        local dram_source_dirs=$(ls --color=never $DRAM_ROOT/$DRAM/source)
         COMPREPLY=( $(compgen -W "${dram_source_dirs}" -- ${cur}) )
         return 0
     fi
