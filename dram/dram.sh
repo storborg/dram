@@ -95,6 +95,19 @@ function dram_confirm_unsafe() {
     fi
 }
 
+function dram_add_info_str() {
+    local dram_path=$1
+    local dram_name=$(basename $dram_path)
+    local dram_type=$2
+    local created_by=$(whoami)
+    local creation_hostname=$(hostname)
+    local creation_time=$(date)
+    local YELLOW='\033[0;33m' # Yellow
+    local NC='\033[0m' # No Color
+    # Remove extra spaces in dram type
+    dram_type=$(echo "$dram_type" | tr -s " ")
+    echo "echo -e \"[Activated dram, name:$YELLOW$dram_name$NC, type:$YELLOW$dram_type$NC, path:$YELLOW$dram_path$NC, creator:$YELLOW$created_by$NC, creation time:$YELLOW$creation_time$NC, creation hostname:$YELLOW$creation_hostname$NC]\"" >> $1/bin/activate
+}
 
 function dram_create_plain () {
     local dram_path=$1
@@ -120,6 +133,7 @@ export $LIB_PATH_VARNAME=$dram_path/lib
 EOF
 
     dram_add_lldb_alias $dram_path
+    dram_add_info_str $dram_path "plain"
 }
 
 function dram_create_plain_with_python () {
@@ -202,6 +216,7 @@ source $dram_path/pyenv/bin/activate
 export $LIB_PATH_VARNAME=$dram_path/lib:\${VIRTUAL_ENV}/lib
 EOF
     dram_add_lldb_alias $dram_path
+    dram_add_info_str $dram_path "plain-with-python $system_site_package $python_version_opt"
 }
 
 function dram_create_macports () {
@@ -234,6 +249,7 @@ EOF
 
     echo "Done."
     dram_add_lldb_alias $dram_path
+    dram_add_info_str $dram_path "macports"
 }
 
 function dram_create_homebrew () {
@@ -252,6 +268,7 @@ EOF
 
     echo "Done."
     dram_add_lldb_alias $dram_path
+    dram_add_info_str $dram_path "homebrew"
 }
 
 function dram_create () {
