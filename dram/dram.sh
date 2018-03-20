@@ -216,7 +216,7 @@ source $dram_path/pyenv/bin/activate
 export $LIB_PATH_VARNAME=$dram_path/lib:\${VIRTUAL_ENV}/lib
 EOF
     dram_add_lldb_alias $dram_path
-    dram_add_info_str $dram_path "plain-with-python $system_site_package $python_version_opt"
+    dram_add_info_str $dram_path "plain-with-python $system_site_packages_opt $python_version_opt"
 }
 
 function dram_create_macports () {
