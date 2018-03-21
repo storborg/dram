@@ -9,7 +9,14 @@ then
 fi
 
 function dram_version () {
-    echo "dram version $dram_version"
+    local DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+    if [[ "$(command -v git)" == "" ]]
+    then
+        local COMMIT="git not available, unable to determine dev version"
+    else
+        local COMMIT="$(git -C $DIR rev-parse HEAD 2> /dev/null || echo Release)"
+    fi
+    echo "dram version $dram_version - $COMMIT"
 }
 
 function dram_list () {
