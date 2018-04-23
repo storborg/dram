@@ -717,6 +717,9 @@ function dram () {
         list)
             dram_list $@
             ;;
+        ls)
+            dram_list $@
+            ;;
         create)
             dram_create $@
             ;;
