@@ -788,6 +788,12 @@ _dram() {
         COMPREPLY=( $(compgen -W "${dram_types}" -- ${cur}) )
         return 0
     fi
+    if [[ ${prev} == "-p" && ${COMP_WORDS[1]} == "create" && " ${COMP_WORDS[@]} " =~ "plain-with-python" ]]
+    then
+        local installed_pythons=$(compgen -c python | grep --color=never -P "^python(\d(\.\d)?)?m?$")
+        COMPREPLY=( $(compgen -W "${installed_pythons}" -- ${cur}) )
+        return 0
+    fi
     if [[ ${prev} == "help" ]]
     then
         # if the user has already typed dram help, then complete subcommands except for help
