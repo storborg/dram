@@ -776,7 +776,7 @@ _dram() {
         COMPREPLY=( $(compgen -W "${drams_list}" -- ${cur}) )
         return 0
     fi
-    if [[ ${prev} == "cdsource" ]]
+    if [[ ${prev} == "cdsource" &&  -n ${DRAM} ]]
     then
         local dram_source_dirs=$(ls --color=never $DRAM_ROOT/$DRAM/source)
         COMPREPLY=( $(compgen -W "${dram_source_dirs}" -- ${cur}) )
