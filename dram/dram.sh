@@ -192,10 +192,11 @@ function dram_create_plain_with_python () {
     fi
 
     local dram_base_name=`basename $dram_path`
-    virtualenv $system_site_packages_opt $python_version_opt --prompt="($dram_base_name) " $dram_path/pyenv
+    local dram_venv_path="$dram_path/pyenv"
+    virtualenv $system_site_packages_opt $python_version_opt --prompt="($dram_base_name) " $dram_venv_path
     # figure out exactly what python version got used
     local exact_python_version=""
-    for entry in "$dram_path"/pyenv/lib/*
+    for entry in "$dram_venv_path"/lib/*
     do
         local entry_base=`basename $entry`
         if [[ $entry_base =~ ^python.* ]]
@@ -210,15 +211,15 @@ function dram_create_plain_with_python () {
     local NC='\033[0m' # No Color
     echo -e "Using python version ${YELLOW}'$exact_python_version'${NC} located at ${YELLOW}'$python_exe_location'${NC}"
     mkdir -p $dram_path/lib/$exact_python_version
-    ln -sf $dram_path/pyenv/lib/$exact_python_version/site-packages $dram_path/lib/$exact_python_version/site-packages
+    ln -sf $dram_venv_path/lib/$exact_python_version/site-packages $dram_path/lib/$exact_python_version/site-packages
 
     cat > $dram_path/bin/activate <<EOF
 export PATH=$dram_path/bin:$dram_path/sbin:\$PATH
 
-export DRAM_CMAKE_FLAGS="-DCMAKE_INSTALL_PREFIX=$dram_path -DCMAKE_PREFIX_PATH=$dram_path"
+export DRAM_CMAKE_FLAGS="-DCMAKE_INSTALL_PREFIX=$dram_path -DCMAKE_PREFIX_PATH=$dram_path -DPYTHON_EXECUTABLE=$dram_venv_path/bin/python"
 export DRAM_CONFIGURE_FLAGS="--prefix=$dram_path"
 
-source $dram_path/pyenv/bin/activate
+source $dram_venv_path/bin/activate
 
 export $LIB_PATH_VARNAME=$dram_path/lib:\${VIRTUAL_ENV}/lib
 EOF
