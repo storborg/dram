@@ -382,7 +382,7 @@ function dram_use () {
 
     if [[ -n "$DRAM" ]]
     then
-        if [["$DRAM" == "$new_dram" ]]
+        if [[ "$DRAM" == "$new_dram" ]]
         then
             echo "Dram '$DRAM' is already active."
         else
