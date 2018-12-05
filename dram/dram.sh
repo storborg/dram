@@ -181,8 +181,8 @@ function dram_create_plain_with_python () {
     done
 
     echo "Creating plain dram in '$dram_path'."
-    mkdir $dram_path/bin
-    mkdir $dram_path/source
+    mkdir "$dram_path/bin"
+    mkdir "$dram_path/source"
 
     if [[ $platform == "Darwin" ]]
     then
@@ -191,7 +191,7 @@ function dram_create_plain_with_python () {
         LIB_PATH_VARNAME="LD_LIBRARY_PATH"
     fi
 
-    local dram_base_name=`basename $dram_path`
+    local dram_base_name=$(basename "$dram_path")
     local dram_venv_path="$dram_path/pyenv"
     virtualenv $system_site_packages_opt $python_version_opt --prompt="($dram_base_name) " $dram_venv_path
     # figure out exactly what python version got used
@@ -205,7 +205,7 @@ function dram_create_plain_with_python () {
             break
         fi
     done
-    local python_exe_location=`readlink -f python`
+    local python_exe_location=$(readlink -f python)
 
     local YELLOW='\033[0;33m' # Yellow
     local NC='\033[0m' # No Color
@@ -289,7 +289,7 @@ function dram_create () {
     # Defaults
     local new_dram_type=plain
     # Parse args
-    while [[ $# > 1 ]]
+    while [[ $# -gt 1 ]]
     do
         local key="$1"
         case $key in
