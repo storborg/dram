@@ -41,7 +41,7 @@ function dram_list () {
     then
         for dram_dir in $DRAM_ROOT/*; do
             dram_name=$(basename $dram_dir)
-            name_len=${#dram_name} 
+            name_len=${#dram_name}
             longest_dram_name=$(($name_len>$longest_dram_name?$name_len:$longest_dram_name))
         done
     fi
@@ -145,9 +145,9 @@ EOF
 
 function dram_create_plain_with_python () {
     local dram_path=$1
-    # drop the dram path arg so we can do the rest 
+    # drop the dram path arg so we can do the rest
     # of the argument parsing without worrying about it
-    shift 
+    shift
     local platform=$(uname)
 
     # Parse the python version and system-site-packages options
@@ -166,7 +166,7 @@ function dram_create_plain_with_python () {
             shift
             shift
             ;;
-        --system-site-packages )    
+        --system-site-packages )
             system_site_packages_opt="--system-site-packages"
             shift
             ;;
@@ -174,7 +174,7 @@ function dram_create_plain_with_python () {
             shift
             break
             ;;
-        * ) 
+        * )
             break
             ;;
     esac
@@ -205,7 +205,7 @@ function dram_create_plain_with_python () {
         fi
     done
     local python_exe_location=`readlink -f python`
-    
+
     local YELLOW='\033[0;33m' # Yellow
     local NC='\033[0m' # No Color
     echo -e "Using python version ${YELLOW}'$exact_python_version'${NC} located at ${YELLOW}'$python_exe_location'${NC}"
@@ -466,7 +466,7 @@ function dram_destroy () {
 
         if [[ "$drams_to_destroy" =~ (^| )$dram_name( |$) ]]
         then
-            echo "Dram '$dram_name' specified multiple times!" 
+            echo "Dram '$dram_name' specified multiple times!"
             return
         fi
 
