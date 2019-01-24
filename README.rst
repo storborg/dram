@@ -46,7 +46,8 @@ Install something with cmake::
     $ make && make install
 
 Tip: don't ever use sudo within a dram. This will keep your "base system"
-totally pristine.
+totally pristine. One of the design goals of dram is to make it easy to clean
+up misbehaving installations.
 
 License
 =======
