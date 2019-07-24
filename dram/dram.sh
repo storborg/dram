@@ -265,14 +265,16 @@ function dram_create_homebrew () {
     echo "Creating Homebrew dram in '$dram_path'."
 
     echo "Downloading and extracting..."
-    curl -L https://github.com/Homebrew/homebrew/tarball/master | tar xz --strip 1 -C $dram_path
+    curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $dram_path
+
+    mkdir "$dram_path/bin"
+    mkdir "$dram_path/source"
 
     echo "Setting up activate script..."
     cat > $dram_path/bin/activate <<EOF
 export PATH=$dram_path/bin:$dram_path/sbin:\$PATH
 #export DYLD_LIBRARY_PATH=$dram_path/lib
 EOF
-
 
     echo "Done."
     dram_add_lldb_alias $dram_path
