@@ -64,6 +64,43 @@ Creating a dram automatically switches to it, but if you want to switch to an al
 Note that if you have set the ``DRAM_AUTO_CDSOURCE`` environment variable, then dram will automatically 
 switch to the source directory of the activated dram whenever you do ``dram use <dram name>``
 
+Dram includes wrappers around common build tools (autotools and cmake) to ease installing software into the dram.
+
+Installing Software with CMake
+------------------------------
+
+As an example, let's install `libftdi` from a source tarball.
+
+First move into the `source` subdirectory, by convention::
+
+    $ dram cdsource
+
+Download and extract the package here::
+
+    $ curl -O https://www.intra2net.com/en/developer/libftdi/download/libftdi1-1.5.tar.bz2
+    $ tar -xvf libftdi1-1.5.tar.bz2
+    $ cd libftdi1-1.5
+
+Invoke CMake using the dram wrapper::
+
+    $ dram cmake ..
+
+Install normally, which will install into this dram's directory structure::
+
+    $ make && make install
+
+Install Software with Autotools
+-------------------------------
+
+Install autotools-based software is similar. Here is a typical installation of `liquid-sdr`::
+
+    $ dram cdsource
+    $ git clone https://github.com/jgaeddert/liquid-dsp.git
+    $ cd liquid-dsp
+    $ ./bootstrap.sh
+    $ dram configure
+    $ make && make install
+
 Listing Drams
 -------------
 
